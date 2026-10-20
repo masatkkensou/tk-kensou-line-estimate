@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#c4560c">
   <title>LINEかんたん見積 | TK建装</title>
-  <link rel="stylesheet" href="style.css?v=20261021-2">
-  <script src="pricing.js?v=20261021-2" defer></script>
-  <script src="app.js?v=20261021-2" defer></script>
+  <link rel="stylesheet" href="style.css?v=20261021-3">
+  <script src="pricing.js?v=20261021-3" defer></script>
+  <script src="app.js?v=20261021-3" defer></script>
 </head>
 <body>
-  <header class="header"><a class="brand" href="./" aria-label="TK建装 トップ"><span class="brand-mark">TK</span><span>TK建装<small>住まいを、心地よく。</small></span></a><span class="version">かんたん見積 <b>Ver.2</b></span></header>
+  <header class="header"><a class="brand" href="./" aria-label="TK建装 トップ"><span class="brand-mark">TK</span><span>TK建装<small>住まいを、心地よく。</small></span></a><span class="version">かんたん見積 <b>Ver.3</b></span></header>
   <main>
     <section class="intro"><p class="eyebrow">YOUR ROOM, A NEW BEGINNING</p><h1>お部屋を変える、<br>第一歩をここから。</h1><p>LINEで30秒。お部屋のリフォーム価格がすぐ分かる。</p><div class="trust"><span>✓ 登録不要</span><span>✓ その場で概算</span><span>✓ 施工1年保証（条件あり）</span></div></section>
     <section class="wizard" aria-label="リフォーム概算見積">
@@ -22,5 +22,40 @@
   <footer>株式会社TK建装 <span>｜</span> LINEかんたん見積<br><small>Ver.2 試作品・概算価格です（保証条件は契約時に確認）</small></footer>
   <dialog id="demo-dialog" aria-labelledby="dialog-title"><div class="dialog-icon">✓</div><h2 id="dialog-title">無料見積のデモです</h2><p>完成版では、ここからお部屋の写真を送って<br>お見積りをご相談いただけます。</p><p class="dialog-note">Ver.1では写真送信・LINE連携は行いません。<br>選択内容や個人情報は保存・送信されません。</p><button class="primary" id="close-dialog">見積結果に戻る</button></dialog>
   <noscript>この見積アプリを利用するには、JavaScriptを有効にしてください。</noscript>
+<script>
+/* 起動救済: 外部JavaScriptが読み込めなかった場合にも見積機能を提供 */
+(function(){
+ function init(){
+  var host=document.getElementById('screen');
+  if(!host || host.children.length) return;
+  var prices={6:[29.9,39.6],8:[34.6,47.6],10:[38.6,54.8],12:[42.3,61.7]};
+  host.innerHTML='<div class="question-heading"><h2>お部屋は何畳ですか？</h2><p>施工する部屋を選んでください。複数部屋にも対応しています。</p></div>'+
+   '<form id="backup-form" style="display:grid;gap:14px">'+
+   '<label>最初のお部屋 <select name="room" style="width:100%;padding:14px;border:1px solid #d9b69e;border-radius:10px"><option value="6">6畳</option><option value="8">8畳</option><option value="10">10畳</option><option value="12">12畳</option></select></label>'+
+   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>追加するお部屋（複数選択可）</legend><label><input type="checkbox" name="other" value="6"> 6畳</label>　<label><input type="checkbox" name="other" value="8"> 8畳</label>　<label><input type="checkbox" name="other" value="10"> 10畳</label>　<label><input type="checkbox" name="other" value="12"> 12畳</label></fieldset>'+
+   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>施工範囲</legend><label><input name="scope" type="radio" value="1" checked> 壁＋天井</label>　<label><input name="scope" type="radio" value="0"> 壁のみ</label></fieldset>'+
+   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>クロスの種類</legend><label><input name="grade" type="radio" value="380" checked> 普及品</label>　<label><input name="grade" type="radio" value="670"> 一般品</label></fieldset>'+
+   '<button class="primary" type="submit">概算見積金額を計算する →</button></form><div id="backup-result" aria-live="polite"></div>';
+  document.getElementById('step-label').textContent='かんたん見積 / Ver.3';
+  document.getElementById('step-name').textContent='部屋と施工条件を選択';
+  document.getElementById('progress').style.width='25%';
+  document.getElementById('backup-form').addEventListener('submit',function(ev){
+   ev.preventDefault();
+   var form=ev.currentTarget, r=Number(form.room.value);
+   var rooms=[r];form.querySelectorAll('input[name="other"]:checked').forEach(function(x){rooms.push(Number(x.value))});
+   var si=Number(form.querySelector('input[name="scope"]:checked').value);
+   var grade=Number(form.querySelector('input[name="grade"]:checked').value);
+   var area=Math.round(rooms.reduce(function(sum,n){return sum+prices[n][si]},0)*10)/10;
+   var days=Math.ceil(area/60), material=Math.round(area*grade),labor=Math.round(area*800),travel=days*5000;
+   var cost=material+labor+travel+Math.round((material+labor+travel)*0.1);
+   var sale=Math.ceil(cost/0.7/1000)*1000, tax=Math.round(sale*0.1);
+   var y=function(n){return n.toLocaleString('ja-JP')+'円'};
+   document.getElementById('backup-result').innerHTML='<div class="price-box" style="margin-top:20px"><p>税込概算金額</p><p class="total">'+y(sale+tax)+'</p><p>税抜 '+y(sale)+' ／ 消費税 '+y(tax)+'</p></div><p class="disclaimer">施工面積 '+area+'㎡ ／ 施工日数目安 '+days+'日（2名・60㎡/日）。現地確認後に正式見積を提示します。施工に起因する不具合に対する1年保証（条件あり）。</p>';
+   document.getElementById('progress').style.width='100%';
+  });
+ }
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
 </body>
 </html>
