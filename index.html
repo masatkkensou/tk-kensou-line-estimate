@@ -1,61 +1,46 @@
 <!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#c4560c">
-  <title>LINEかんたん見積 | TK建装</title>
-  <link rel="stylesheet" href="style.css?v=20261021-3">
-  <script src="pricing.js?v=20261021-3" defer></script>
-  <script src="app.js?v=20261021-3" defer></script>
-</head>
-<body>
-  <header class="header"><a class="brand" href="./" aria-label="TK建装 トップ"><span class="brand-mark">TK</span><span>TK建装<small>住まいを、心地よく。</small></span></a><span class="version">かんたん見積 <b>Ver.3</b></span></header>
-  <main>
-    <section class="intro"><p class="eyebrow">YOUR ROOM, A NEW BEGINNING</p><h1>お部屋を変える、<br>第一歩をここから。</h1><p>LINEで30秒。お部屋のリフォーム価格がすぐ分かる。</p><div class="trust"><span>✓ 登録不要</span><span>✓ その場で概算</span><span>✓ 施工1年保証（条件あり）</span></div></section>
-    <section class="wizard" aria-label="リフォーム概算見積">
-      <div class="progress-header"><span id="step-label"></span><span id="step-name"></span></div><div class="progress-track"><div id="progress"></div></div>
-      <div id="screen"></div>
-    </section>
-    <p class="note">価格も、仕上がりも、わかりやすく。<br>住宅・マンションのクロス張替えを、もっと身近に。</p>
-  </main>
-  <footer>株式会社TK建装 <span>｜</span> LINEかんたん見積<br><small>Ver.2 試作品・概算価格です（保証条件は契約時に確認）</small></footer>
-  <dialog id="demo-dialog" aria-labelledby="dialog-title"><div class="dialog-icon">✓</div><h2 id="dialog-title">無料見積のデモです</h2><p>完成版では、ここからお部屋の写真を送って<br>お見積りをご相談いただけます。</p><p class="dialog-note">Ver.1では写真送信・LINE連携は行いません。<br>選択内容や個人情報は保存・送信されません。</p><button class="primary" id="close-dialog">見積結果に戻る</button></dialog>
-  <noscript>この見積アプリを利用するには、JavaScriptを有効にしてください。</noscript>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#c4560c">
+<title>TK建装 かんたん見積 Ver.4</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff6ed;color:#55351f;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;line-height:1.6}header{background:#fff1e0;padding:22px 18px;border-bottom:1px solid #f0d4b7}header strong{font-size:23px;color:#bc4e0c}header small{float:right;color:#9b541f}main{max-width:640px;margin:auto;padding:22px 16px 50px}h1{font-size:26px;line-height:1.4;margin:0 0 10px}h2{font-size:19px;margin:0 0 10px}p{margin:4px 0 16px}.intro{font-size:14px;color:#725942}.panel{background:#fff;border:1px solid #f0d4b7;border-radius:16px;padding:22px 18px;margin:18px 0;box-shadow:0 6px 20px #b55c1712}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0}.choice{display:block;border:2px solid #eed5bc;border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;color:#81451e;background:white;font-weight:700}.choice:has(input:checked){border-color:#d45b0b;background:#fff0e0}.choice input{accent-color:#c4560c}.sub{font-size:12px;color:#796450}.row{display:flex;gap:8px}.btn{background:#c4560c;border:0;color:#fff;border-radius:12px;padding:16px 22px;font-weight:700;font-size:17px;width:100%;cursor:pointer}.btn2{background:#eee7e0;color:#49301c}.price{font-size:35px;font-weight:800;color:#b84706}.hidden{display:none}.muted{color:#6f6154;font-size:13px}.notice{font-size:13px;background:#f9f3ec;padding:12px;border-radius:10px}.version{font-size:13px;color:#966744;text-align:center}
+</style></head>
+<body><header><strong>TK建装</strong><small>LINEかんたん見積 Ver.4</small></header>
+<main><h1>お部屋のクロス張替え<br>かんたん見積</h1><p class="intro">丁寧な施工・施工に起因する不具合には1年保証（条件あり）。</p>
+<section class="panel" id="entry"><h2>① お部屋を選択してください</h2><p class="sub">最初の1部屋を選択してください。</p>
+<div class="choices" id="primaryRooms"></div><h2>② 追加するお部屋（任意）</h2><p class="sub">同じ畳数のお部屋を増やすこともできます。</p><div id="additional"></div>
+<h2>③ 張替え範囲</h2><div class="choices"><label class="choice"><input type="radio" name="scope" value="walls" > 壁のみ</label><label class="choice"><input type="radio" name="scope" value="both" checked> 壁＋天井</label></div>
+<h2>④ クロスの種類</h2><div class="choices"><label class="choice"><input type="radio" name="grade" value="standard" checked> 普及品</label><label class="choice"><input type="radio" name="grade" value="select"> 一般品</label></div>
+<button class="btn" id="calculate" type="button">概算見積を計算する →</button></section>
+<section class="panel hidden" id="result"><h2>お見積金額（税込・概算）</h2><div class="price" id="price"></div><p id="breakdown"></p><p id="detail" class="muted"></p><p class="notice">工事の正式価格・施工日数は現地確認後に確定します。廃材処分費は今回の原価計算から除外しています。施工に起因する不具合には引渡しから1年間の施工保証を予定しています（条件あり）。</p><button class="btn btn2" id="revise" type="button">内容を変更する</button></section><p class="version">株式会社TK建装｜独立版 Ver.4 ・概算料金</p>
+</main>
 <script>
-/* 起動救済: 外部JavaScriptが読み込めなかった場合にも見積機能を提供 */
 (function(){
- function init(){
-  var host=document.getElementById('screen');
-  if(!host || host.children.length) return;
-  var prices={6:[29.9,39.6],8:[34.6,47.6],10:[38.6,54.8],12:[42.3,61.7]};
-  host.innerHTML='<div class="question-heading"><h2>お部屋は何畳ですか？</h2><p>施工する部屋を選んでください。複数部屋にも対応しています。</p></div>'+
-   '<form id="backup-form" style="display:grid;gap:14px">'+
-   '<label>最初のお部屋 <select name="room" style="width:100%;padding:14px;border:1px solid #d9b69e;border-radius:10px"><option value="6">6畳</option><option value="8">8畳</option><option value="10">10畳</option><option value="12">12畳</option></select></label>'+
-   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>追加するお部屋（複数選択可）</legend><label><input type="checkbox" name="other" value="6"> 6畳</label>　<label><input type="checkbox" name="other" value="8"> 8畳</label>　<label><input type="checkbox" name="other" value="10"> 10畳</label>　<label><input type="checkbox" name="other" value="12"> 12畳</label></fieldset>'+
-   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>施工範囲</legend><label><input name="scope" type="radio" value="1" checked> 壁＋天井</label>　<label><input name="scope" type="radio" value="0"> 壁のみ</label></fieldset>'+
-   '<fieldset style="border:1px solid #e6cdb7;border-radius:10px;padding:12px"><legend>クロスの種類</legend><label><input name="grade" type="radio" value="380" checked> 普及品</label>　<label><input name="grade" type="radio" value="670"> 一般品</label></fieldset>'+
-   '<button class="primary" type="submit">概算見積金額を計算する →</button></form><div id="backup-result" aria-live="polite"></div>';
-  document.getElementById('step-label').textContent='かんたん見積 / Ver.3';
-  document.getElementById('step-name').textContent='部屋と施工条件を選択';
-  document.getElementById('progress').style.width='25%';
-  document.getElementById('backup-form').addEventListener('submit',function(ev){
-   ev.preventDefault();
-   var form=ev.currentTarget, r=Number(form.elements.namedItem('room').value);
-   var rooms=[r];form.querySelectorAll('input[name="other"]:checked').forEach(function(x){rooms.push(Number(x.value))});
-   var si=Number(form.querySelector('input[name="scope"]:checked').value);
-   var grade=Number(form.querySelector('input[name="grade"]:checked').value);
-   var area=Math.round(rooms.reduce(function(sum,n){return sum+prices[n][si]},0)*10)/10;
-   var days=Math.ceil(area/60), material=Math.round(area*grade),labor=Math.round(area*800),travel=days*5000;
-   var cost=material+labor+travel+Math.round((material+labor+travel)*0.1);
-   var sale=Math.ceil(cost/0.7/1000)*1000, tax=Math.round(sale*0.1);
-   var y=function(n){return n.toLocaleString('ja-JP')+'円'};
-   document.getElementById('backup-result').innerHTML='<div class="price-box" style="margin-top:20px"><p>税込概算金額</p><p class="total">'+y(sale+tax)+'</p><p>税抜 '+y(sale)+' ／ 消費税 '+y(tax)+'</p></div><p class="disclaimer">施工面積 '+area+'㎡ ／ 施工日数目安 '+days+'日（2名・60㎡/日）。現地確認後に正式見積を提示します。施工に起因する不具合に対する1年保証（条件あり）。</p>';
-   document.getElementById('progress').style.width='100%';
-  });
- }
- if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+'use strict';
+var areas={6:{walls:29.9,both:39.6},8:{walls:34.6,both:47.6},10:{walls:38.6,both:54.8},12:{walls:42.3,both:61.7}};
+var options=[6,8,10,12];var one=document.getElementById('primaryRooms');
+one.innerHTML=options.map(function(n){return '<label class="choice"><input type="radio" name="first" value="'+n+'" '+(n===6?'checked':'')+'> '+n+'畳</label>'}).join('');
+var extra=document.getElementById('additional');
+extra.innerHTML=options.map(function(n){return '<div class="row" style="align-items:center;margin:6px 0"><span style="flex:1">'+n+'畳を追加</span><button type="button" class="btn btn2" data-size="'+n+'" data-change="-1" style="width:48px;padding:8px">−</button><output id="count-'+n+'" style="min-width:28px;text-align:center">0</output><button type="button" class="btn btn2" data-size="'+n+'" data-change="1" style="width:48px;padding:8px">＋</button></div>'}).join('');
+var counts={6:0,8:0,10:0,12:0};
+extra.addEventListener('click',function(event){var b=event.target.closest('button');if(!b)return;var n=b.getAttribute('data-size');counts[n]=Math.max(0,Math.min(10,counts[n]+Number(b.getAttribute('data-change'))));document.getElementById('count-'+n).textContent=counts[n]});
+document.getElementById('calculate').addEventListener('click',function(){
+ var selected=document.querySelector('input[name="first"]:checked');
+ var scope=document.querySelector('input[name="scope"]:checked').value;
+ var grade=document.querySelector('input[name="grade"]:checked').value;
+ if(!selected){alert('部屋を選択してください');return}
+ var list=[Number(selected.value)];options.forEach(function(n){for(var i=0;i<counts[n];i++)list.push(n)});
+ var area=Math.round(list.reduce(function(s,n){return s+areas[n][scope]},0)*10)/10;
+ var days=Math.max(1,Math.ceil((area-1e-9)/60));
+ var material=Math.round(area*(grade==='standard'?380:670)),labor=Math.round(area*800),travel=5000*days;
+ var direct=material+labor+travel,management=Math.round(direct*.1),cost=direct+management;
+ var price=Math.ceil((cost/.7)/1000)*1000, tax=Math.round(price*.1);
+ var format=function(n){return n.toLocaleString('ja-JP')+'円'};
+ document.getElementById('price').textContent=format(price+tax);
+ document.getElementById('breakdown').textContent='税抜 '+format(price)+' ＋ 消費税 '+format(tax);
+ document.getElementById('detail').textContent=list.join('畳＋')+'畳 ／ '+(scope==='both'?'壁＋天井':'壁のみ')+' ／ '+(grade==='standard'?'普及品':'一般品')+' ／ 施工面積 '+area+'㎡ ／ '+days+'日（2人作業）';
+ document.getElementById('result').classList.remove('hidden');
+ document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('revise').addEventListener('click',function(){document.getElementById('entry').scrollIntoView({behavior:'smooth'})});
 })();
-</script>
-</body>
-</html>
+</script></body></html>
