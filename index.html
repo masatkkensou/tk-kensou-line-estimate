@@ -41,7 +41,7 @@
   document.getElementById('progress').style.width='25%';
   document.getElementById('backup-form').addEventListener('submit',function(ev){
    ev.preventDefault();
-   var form=ev.currentTarget, r=Number(form.room.value);
+   var form=ev.currentTarget, r=Number(form.elements.namedItem('room').value);
    var rooms=[r];form.querySelectorAll('input[name="other"]:checked').forEach(function(x){rooms.push(Number(x.value))});
    var si=Number(form.querySelector('input[name="scope"]:checked').value);
    var grade=Number(form.querySelector('input[name="grade"]:checked').value);
