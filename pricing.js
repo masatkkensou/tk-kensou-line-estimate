@@ -1,15 +1,19 @@
-/* 料金設定はこのファイルに集約。すべて税抜の仮価格（円）です。
-   壁＋天井は walls + ceilingAddition、床料金は部屋別です。
-   家具・オプションは1部屋あたりの一式料金です。 */
+/* 税抜原価。廃材処分費は含まない。 */
 window.ESTIMATE_PRICING = {
   taxRate: 0.10,
   rooms: {
-    6:  { walls: 36000, ceilingAddition: 12000, floor: 42000 },
-    8:  { walls: 44000, ceilingAddition: 16000, floor: 56000 },
-    10: { walls: 52000, ceilingAddition: 20000, floor: 70000 },
-    12: { walls: 60000, ceilingAddition: 24000, floor: 84000 }
+    6: { walls: 29.9, wallsAndCeiling: 39.6, floor: 42000 },
+    8: { walls: 34.6, wallsAndCeiling: 47.6, floor: 56000 },
+    10: { walls: 38.6, wallsAndCeiling: 54.8, floor: 70000 },
+    12: { walls: 42.3, wallsAndCeiling: 61.7, floor: 84000 }
   },
-  wallpaperMultipliers: { standard: 1, select: 1.35 },
-  furniture: { none: 0, small: 3000, large1: 6000, large2: 12000 },
+  material: { standard: 380, select: 670 },
+  laborRate: 800,
+  dailyCapacity: 60,
+  travelPerDay: 5000,
+  managementRate: 0.10,
+  grossMargin: 0.30,
+  roundTo: 1000,
+  furniture: { none: 0, small: 2000, large1: 2000, large2: 4000 },
   options: { baseboard: 8000, plates: 3000, lighting: 8000, rail: 6000 }
 };
